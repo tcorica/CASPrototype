@@ -1,8 +1,11 @@
 void setup()
 {
-  MathFunction foo = new ConstantFunction(9);
-  foo = new ProductFunction(foo, new VariableFunction("x"));
-  foo = new SumFunction(foo, new ConstantFunction(7));
+  MathFunction foo = new VariableFunction("x");
+  foo = new PowerFunction(foo, 3);
+  foo = new ProductFunction(new ConstantFunction(10), foo);
+  foo = new SumFunction(foo, new VariableFunction("x"));
+
+  
 
   println(foo+"       foo(2) = "+foo.evaluate(2));
   println(foo.getDerivative()+"       foo'(2) = "+foo.getDerivative().evaluate(2));
@@ -13,7 +16,7 @@ void setup()
 //=================================================
 abstract class MathFunction
 {
-  final boolean suppress0and1 = true;  // Not implemented!
+  final boolean suppress0and1 = false; //true;  // Not implemented!
 
   abstract MathFunction getDerivative();
   abstract float evaluate(float x);
@@ -151,30 +154,33 @@ class SumFunction extends MathFunction
 //=================================================
 class PowerFunction extends MathFunction
 {
-  MathFunction lhs;
+  MathFunction base;
   int exponent;
 
   PowerFunction(MathFunction f1, int expon)
   {
-    lhs = f1;
+    base = f1;
     exponent = expon;
   }
 
   MathFunction getDerivative()
   {
-    return new ProductFunction(
+    return new ProductFunction( 
+    new ProductFunction(
     new ConstantFunction(exponent), 
-    new PowerFunction(lhs, exponent-1));
+    new PowerFunction(base, exponent-1)), 
+    base.getDerivative()
+      );
   }
 
   float evaluate(float x)
   {
-    return pow(lhs.evaluate(x),exponent);
+    return pow(base.evaluate(x), exponent);
   }
 
   String toString()
   {
-    return lhs.toString()+"^"+exponent;
+    return base.toString()+"^"+exponent;
   }
 }
 
