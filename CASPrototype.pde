@@ -162,7 +162,6 @@ class PowerFunction extends MathFunction
 
   MathFunction getDerivative()
   {
-    // (f+g)' = f' + g'
     return new ProductFunction(
     new ConstantFunction(exponent), 
     new PowerFunction(lhs, exponent-1));
@@ -175,13 +174,6 @@ class PowerFunction extends MathFunction
 
   String toString()
   {
-//    if (suppress0and1)
-//    {
-//      if (lhs.toString().equals("0"))
-//        return rhs.toString();
-//      if (rhs.toString().equals("0"))
-//        return lhs.toString();
-//    }
     return lhs.toString()+"^"+exponent;
   }
 }
