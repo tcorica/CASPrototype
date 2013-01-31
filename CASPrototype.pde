@@ -1,31 +1,51 @@
 void setup()
 {
+  // MathFunction foo = new VariableFunction("x");
+  // foo = new PowerFunction(foo, 3);
+  // foo = new ProductFunction(new ConstantFunction(10), foo);
+  // foo = new SumFunction(foo, new VariableFunction("x"));
+
   MathFunction foo = new VariableFunction("x");
   foo = new PowerFunction(foo, 3);
-  foo = new ProductFunction(new ConstantFunction(10), foo);
-  foo = new SumFunction(foo, new VariableFunction("x"));
-
-  
+  foo = new SumFunction(new ConstantFunction(10), foo);
+  foo = new ProductFunction(foo, new VariableFunction("x"));
 
   println(foo+"       foo(2) = "+foo.evaluate(2));
   println(foo.getDerivative()+"       foo'(2) = "+foo.getDerivative().evaluate(2));
 
   exit();
 }
+
+
+String parenthesize(MathFunction mf, byte myOoo) {
+  if ( mf.getOoo() >= myOoo )
+  {
+    return "("+mf.toString()+")";
+  } else {
+    return mf.toString();
+  }
+}
+
 //=================================================
 //=================================================
 abstract class MathFunction
 {
-  final boolean suppress0and1 = false; //true;  // Not implemented!
+  final boolean suppress0and1 = false; //true;
 
   abstract MathFunction getDerivative();
   abstract float evaluate(float x);
   abstract String toString();
+  abstract byte getOoo();
 }
 //=================================================
 class ConstantFunction extends MathFunction
 {
   float myValue;
+  
+  byte getOoo()
+  {
+    return 0;
+  }
 
   ConstantFunction(float k)
   {
@@ -55,6 +75,11 @@ class VariableFunction extends MathFunction
 {
   String myVariable;
 
+  byte getOoo()
+  {
+    return 0;
+  }
+
   VariableFunction(String v)
   {
     myVariable = v;
@@ -80,6 +105,11 @@ class VariableFunction extends MathFunction
 class ProductFunction extends MathFunction
 {
   MathFunction lhs, rhs;
+
+  byte getOoo()
+  {
+    return 3;
+  }
 
   ProductFunction(MathFunction f1, MathFunction f2)
   {
@@ -111,13 +141,18 @@ class ProductFunction extends MathFunction
         return "0";
     }
 
-    return lhs.toString()+"*"+rhs.toString();
+    return parenthesize(lhs, getOoo())+"*"+parenthesize(rhs, getOoo());
   }
 }
 //=================================================
 class SumFunction extends MathFunction
 {
   MathFunction lhs, rhs;
+
+  byte getOoo()
+  {
+    return 4;
+  }
 
   SumFunction(MathFunction f1, MathFunction f2)
   {
@@ -147,7 +182,8 @@ class SumFunction extends MathFunction
       if (rhs.toString().equals("0"))
         return lhs.toString();
     }
-    return lhs.toString()+"+"+rhs.toString();
+    
+    return parenthesize(lhs, getOoo())+"+"+parenthesize(rhs, getOoo());
   }
 }
 
@@ -156,6 +192,11 @@ class PowerFunction extends MathFunction
 {
   MathFunction base;
   int exponent;
+
+  byte getOoo()
+  {
+    return 2;
+  }
 
   PowerFunction(MathFunction f1, int expon)
   {
@@ -180,7 +221,7 @@ class PowerFunction extends MathFunction
 
   String toString()
   {
-    return base.toString()+"^"+exponent;
+    return parenthesize(base, getOoo())+"^"+exponent;
   }
 }
 
