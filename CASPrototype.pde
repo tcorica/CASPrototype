@@ -32,18 +32,12 @@ void coricaTest()
 //=================================================
 abstract class MathFunction
 {
-  final boolean suppress0and1 = false; //true;
+  final boolean suppress0and1 = false;
 
   abstract MathFunction getDerivative();
   abstract float evaluate(float x);
   abstract String toString();
-//  abstract byte getOoo();  // Get order of operations; low values = high precedence
-  final byte myOoo;
-
-  MathFunction(byte ooo)
-  {
-    myOoo = ooo;
-  }
+  byte myOoo = 0;
 
   String parenthesize(MathFunction mf, byte Ooo) {
     if ( mf.myOoo >= Ooo )
@@ -62,7 +56,7 @@ class ConstantFunction extends MathFunction
 
   ConstantFunction(float k)
   {
-    super((byte)0);
+    myOoo = 0;
     myValue = k;
   }
 
@@ -91,7 +85,7 @@ class VariableFunction extends MathFunction
 
   VariableFunction(String v)
   {
-    super((byte)0);
+    myOoo = 0;
     myVariable = v;
   }
 
@@ -118,7 +112,7 @@ class ProductFunction extends MathFunction
 
   ProductFunction(MathFunction f1, MathFunction f2)
   {
-    super((byte)3);
+    myOoo = 3;
     lhs = f1;
     rhs = f2;
   }
@@ -157,7 +151,7 @@ class SumFunction extends MathFunction
 
   SumFunction(MathFunction f1, MathFunction f2)
   {
-    super((byte)4);
+    myOoo = 4;
     lhs = f1;
     rhs = f2;
   }
@@ -197,7 +191,7 @@ class PowerFunction extends MathFunction
 
   PowerFunction(MathFunction f1, int expon)
   {
-    super((byte)2);
+    myOoo = 2;
     base = f1;
     exponent = expon;
   }
