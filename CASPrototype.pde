@@ -37,10 +37,16 @@ abstract class MathFunction
   abstract MathFunction getDerivative();
   abstract float evaluate(float x);
   abstract String toString();
-  abstract byte getOoo();  // Get order of operations; low values = high precedence
+//  abstract byte getOoo();  // Get order of operations; low values = high precedence
+  final byte myOoo;
 
-  String parenthesize(MathFunction mf, byte myOoo) {
-    if ( mf.getOoo() >= myOoo )
+  MathFunction(byte ooo)
+  {
+    myOoo = ooo;
+  }
+
+  String parenthesize(MathFunction mf, byte Ooo) {
+    if ( mf.myOoo >= Ooo )
     {
       return "("+mf.toString()+")";
     } 
@@ -54,13 +60,9 @@ class ConstantFunction extends MathFunction
 {
   float myValue;
 
-  byte getOoo()
-  {
-    return 0;
-  }
-
   ConstantFunction(float k)
   {
+    super((byte)0);
     myValue = k;
   }
 
@@ -87,13 +89,9 @@ class VariableFunction extends MathFunction
 {
   String myVariable;
 
-  byte getOoo()
-  {
-    return 0;
-  }
-
   VariableFunction(String v)
   {
+    super((byte)0);
     myVariable = v;
   }
 
@@ -118,13 +116,9 @@ class ProductFunction extends MathFunction
 {
   MathFunction lhs, rhs;
 
-  byte getOoo()
-  {
-    return 3;
-  }
-
   ProductFunction(MathFunction f1, MathFunction f2)
   {
+    super((byte)3);
     lhs = f1;
     rhs = f2;
   }
@@ -153,7 +147,7 @@ class ProductFunction extends MathFunction
         return "0";
     }
 
-    return parenthesize(lhs, getOoo())+"*"+parenthesize(rhs, getOoo());
+    return parenthesize(lhs, myOoo)+"*"+parenthesize(rhs, myOoo);
   }
 }
 //=================================================
@@ -161,13 +155,9 @@ class SumFunction extends MathFunction
 {
   MathFunction lhs, rhs;
 
-  byte getOoo()
-  {
-    return 4;
-  }
-
   SumFunction(MathFunction f1, MathFunction f2)
   {
+    super((byte)4);
     lhs = f1;
     rhs = f2;
   }
@@ -195,7 +185,7 @@ class SumFunction extends MathFunction
         return lhs.toString();
     }
 
-    return parenthesize(lhs, getOoo())+"+"+parenthesize(rhs, getOoo());
+    return parenthesize(lhs, myOoo)+"+"+parenthesize(rhs, myOoo);
   }
 }
 
@@ -205,13 +195,9 @@ class PowerFunction extends MathFunction
   MathFunction base;
   int exponent;
 
-  byte getOoo()
-  {
-    return 2;
-  }
-
   PowerFunction(MathFunction f1, int expon)
   {
+    super((byte)2);
     base = f1;
     exponent = expon;
   }
@@ -233,7 +219,7 @@ class PowerFunction extends MathFunction
 
   String toString()
   {
-    return parenthesize(base, getOoo())+"^"+exponent;
+    return parenthesize(base, myOoo)+"^"+exponent;
   }
 }
 
