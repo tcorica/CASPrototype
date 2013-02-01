@@ -1,10 +1,12 @@
 void setup()
 {
-  // MathFunction foo = new VariableFunction("x");
-  // foo = new PowerFunction(foo, 3);
-  // foo = new ProductFunction(new ConstantFunction(10), foo);
-  // foo = new SumFunction(foo, new VariableFunction("x"));
+  coricaTest();
+  jiehanTest();
+  exit();
+}
 
+void jiehanTest()
+{
   MathFunction foo = new VariableFunction("x");
   foo = new PowerFunction(foo, 3);
   foo = new SumFunction(new ConstantFunction(10), foo);
@@ -12,18 +14,18 @@ void setup()
 
   println(foo+"       foo(2) = "+foo.evaluate(2));
   println(foo.getDerivative()+"       foo'(2) = "+foo.getDerivative().evaluate(2));
-
-  exit();
 }
 
+void coricaTest()
+{
+  MathFunction foo = new ConstantFunction(3);
+  foo = new SumFunction(foo, new ConstantFunction(4));
+  foo = new ProductFunction(foo, new ConstantFunction(5));
+  println("(3+4)*5: "+foo+" = "+foo.evaluate(0));
 
-String parenthesize(MathFunction mf, byte myOoo) {
-  if ( mf.getOoo() >= myOoo )
-  {
-    return "("+mf.toString()+")";
-  } else {
-    return mf.toString();
-  }
+  foo = new ConstantFunction(3);
+  foo = new ProductFunction(foo, new SumFunction(new ConstantFunction(4), new ConstantFunction(5)));
+  println("3*(4+5): "+foo+" = "+foo.evaluate(0));
 }
 
 //=================================================
@@ -35,13 +37,23 @@ abstract class MathFunction
   abstract MathFunction getDerivative();
   abstract float evaluate(float x);
   abstract String toString();
-  abstract byte getOoo();
+  abstract byte getOoo();  // Get order of operations; low values = high precedence
+
+  String parenthesize(MathFunction mf, byte myOoo) {
+    if ( mf.getOoo() >= myOoo )
+    {
+      return "("+mf.toString()+")";
+    } 
+    else {
+      return mf.toString();
+    }
+  }
 }
 //=================================================
 class ConstantFunction extends MathFunction
 {
   float myValue;
-  
+
   byte getOoo()
   {
     return 0;
@@ -182,7 +194,7 @@ class SumFunction extends MathFunction
       if (rhs.toString().equals("0"))
         return lhs.toString();
     }
-    
+
     return parenthesize(lhs, getOoo())+"+"+parenthesize(rhs, getOoo());
   }
 }
